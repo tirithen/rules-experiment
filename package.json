@@ -1,0 +1,30 @@
+{
+  "name": "rules-experiment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "EventStore.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "coverage": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -R spec",
+    "test": "node_modules/.bin/mocha --recursive --growl",
+    "dev": "node_modules/.bin/mocha --recursive --watch --growl"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tirithen/rules-experiment.git"
+  },
+  "author": "Fredrik Söderström <tirithen@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/tirithen/rules-experiment/issues"
+  },
+  "homepage": "https://github.com/tirithen/rules-experiment#readme",
+  "devDependencies": {
+    "istanbul": "^0.4.5",
+    "mocha": "^3.0.2"
+  },
+  "dependencies": {
+  }
+}

@@ -1,4 +1,6 @@
-class Enchantment {
+const Target = require('../../../Target');
+
+class Enchantment extends Target {
   constructor() {
 
   }

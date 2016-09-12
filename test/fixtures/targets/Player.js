@@ -1,4 +1,6 @@
-class Player {
+const Target = require('../../../Target');
+
+class Player extends Target {
   constructor() {
 
   }

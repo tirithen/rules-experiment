@@ -1,6 +1,10 @@
 class Rule {
-  constructor() {
+  constructor(string) {
 
+  }
+
+  parse(ruleString) {
+    //ruleString
   }
 }
 

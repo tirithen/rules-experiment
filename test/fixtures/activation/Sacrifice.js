@@ -1,6 +1,6 @@
 const Activation = require('../../../Activation');
 
-class Sacrifice {
+class Sacrifice extends Activation {
   constructor() {
 
   }
