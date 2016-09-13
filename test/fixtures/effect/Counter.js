@@ -1,9 +1,5 @@
 const Effect = require('../../../Effect');
 
-class Counter extends Effect {
-  constructor() {
-
-  }
-}
+class Counter extends Effect {}
 
 module.exports = Counter;

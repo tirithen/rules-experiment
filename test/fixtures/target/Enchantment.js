@@ -1,9 +1,5 @@
 const Target = require('../../../Target');
 
-class Enchantment extends Target {
-  constructor() {
-
-  }
-}
+class Enchantment extends Target {}
 
 module.exports = Enchantment;

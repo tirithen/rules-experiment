@@ -1,14 +1,14 @@
 [
   {
     "name": "Lightning Bolt",
-    "rules": "{this:name} {effect:DealDamage amount=3 target=[Creature Player]}.",
+    "rules": "{this:name} {Effect:DealDamage amount=3 target=[Creature Player]}.",
     "output": "Lightning Bolt deals 3 damage to target creature or player."
   },
   {
     "name": "Arenson's Aura",
     "rules": [
-      "{activation:Mana white=1}, {activation:Sacrifice target=Enchantment}: {effect:Destroy target=Enchantment}.",
-      "{activation:Mana colorless=3 blue=2}: {effect:Counter target=Enchantment}."
+      "{Activation:Mana white=1}, {Activation:Sacrifice target=Enchantment}: {Effect:Destroy target=Enchantment}.",
+      "{Activation:Mana colorless=3 blue=2}: {Effect:Counter target=Enchantment}."
     ],
     "output": [
       "W, Sacrifice an Enchantment: Destroy target enchantment.",
@@ -17,7 +17,7 @@
   },
   {
     "name": "Braingeyser",
-    "rules": "{effect:PlayerDrawCard target=Player amount={this:cost}}.",
+    "rules": "{Effect:PlayerDrawCard target=Player amount={this:cost}}.",
     "output": "Target player draws X cards."
   }
 ]

@@ -1,6 +1,9 @@
-class Effect {
-  constructor() {
+const RulePart = require('./RulePart');
 
+class Effect extends RulePart {
+  constructor() {
+    super();
+    this.type = 'effect';
   }
 }
 

@@ -1,9 +1,5 @@
 const Target = require('../../../Target');
 
-class Player extends Target {
-  constructor() {
-
-  }
-}
+class Player extends Target {}
 
 module.exports = Player;
