@@ -1,40 +1,58 @@
-const quoteRegExp = /"/;
-const rulePartRegExp = /{\s*(\w+)\s*:\s*(\w+)\s+([^}]+)\s*}/;
+const populate = require('./populate');
 
-class Rule {
-  constructor(string, rulePartConstructors = new Map()) {
+const quoteRegExp = /"/g;
+const parameterRegExp = /\w+\s*=\s*("[^"]+"|\w+)/g;
+const rulePartRegExp = /\{\s*(\w+)\s*:\s*(\w+)\s+([^\}]+)\s*\}/;
+const isNumericRegExp = /^\d+(\.\d+)?$/;
+
+class Rule extends Map {
+  constructor(string = '', rulePartConstructors = new Map()) {
+    super();
+    this.ruleString = string;
+    this.template = '';
     this.rulePartConstructors = rulePartConstructors;
-    this.ruleParts = new Map();
-    this.ruleTemplateString = '';
-    this.parseRuleString(string);
+    this.parseRuleString();
   }
 
-  parseRuleString(string) {
-    this.ruleTemplateString = string.replace(rulePartRegExp, (matches) => {
-      const rulePartName = matches[2];
-      const Constructor = this.rulePartConstructors.get(rulePartName);
-      const parameters = this.parseRulePartParameters(matches[3]);
-      const rulePart = new Constructor(parameters);
+  parseRuleString() {
+    this.template = this.ruleString.replace(
+      rulePartRegExp,
+      (match, partType, partName, partParameters) => {
+        const Constructor = this.rulePartConstructors.get(partName);
+console.log('Constructor', Constructor, this.rulePartConstructors)
+        const parameters = this.parseRulePartParameters(partParameters);
+        const rulePart = new Constructor(parameters);
 
-      this.ruleParts.set(rulePart.id, rulePart);
+        if (rulePart.type !== partType) {
+          throw new Error(`RulePart instance must be of type ${partType}`);
+        }
 
-      return `{${rulePart.id}}`;
-    });
+        this.set(rulePart.id, rulePart);
+
+        return `{${rulePart.id}}`;
+      }
+    );
   }
 
   parseRulePartParameters(string) {
     const parameters = new Map();
-
-    string.trim().split(/\s+/).forEach((pair) => {
-      if () {
-
+    console.log('string', string)
+console.log('parameters', string.trim().match(parameterRegExp));
+    string.trim().match(parameterRegExp).forEach((parameter) => {
+      const parts = parameter.trim().split('=');
+      parts[1] = parts[1].replace(quoteRegExp, '');
+      if (parts[1].match(isNumericRegExp)) {
+        parts[1] = parseFloat(parts[1]);
       }
+      parameters.set(parts[0], parts[1]);
     });
 
     return parameters;
   }
 
-  getText() {
-
+  toString() {
+    return populate(this.template, this.ruleParts);
   }
 }
+
+module.exports = Rule;
