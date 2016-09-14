@@ -3,18 +3,22 @@ const RulePart = require('./RulePart');
 
 const quoteRegExp = /"/g;
 const squareBracketsOrSpaceRegExp = /[\[\]\s]/g;
-const parameterRegExp = /\w+\s*=\s*("[^"]+"|\w+)/g;
+const parameterRegExp = /^\w+\s*=\s*("[^"]+"|\w+)$/;
+const spaceRegExp = /\s+/;
 const rulePartRegExp = /\{\s*(\w+)\s*:\s*(\w+)(\s+([^\}]+))?\s*\}/;
 const isNumericRegExp = /^\d+(\.\d+)?$/;
 const referrsToConstructorsRegExp = /^\s*\[?\s*[\w\s,]+\s*\]?\s*$/;
 
 class Rule extends Map {
-  constructor(string = '', rulePartConstructors = new Map()) {
+  constructor(string = '', rulePartConstructors = new Map(), data = new Map()) {
     super();
     this.ruleString = string;
     this.template = '';
     this.rulePartConstructors = rulePartConstructors;
     this.parseRuleString();
+    data.forEach((value, name) => {
+      this.set(name, value);
+    });
   }
 
   parseRuleString() {
@@ -33,7 +37,6 @@ class Rule extends Map {
         }
 
         const rulePart = new Constructor(parameters);
-
         if (rulePart.type !== partType) {
           throw new Error(`RulePart instance must be of type "${rulePart.type}"`);
         }
@@ -48,8 +51,12 @@ class Rule extends Map {
   parseRulePartParameters(string) {
     const parameters = new Map();
 
-    string.trim().match(parameterRegExp).forEach((parameter) => {
-      const parts = parameter.trim().split('=');
+    string.trim().split(spaceRegExp).forEach((parameter) => {
+      if (!parameter.match(parameterRegExp)) {
+        throw new Error(`Malformed RulePart attribute in: ${string}`);
+      }
+
+      const parts = parameter.split('=');
 
       if (parts[1].match(quoteRegExp)) {
         parts[1] = parts[1].replace(quoteRegExp, '');
@@ -71,17 +78,15 @@ class Rule extends Map {
     const constructors = value.replace(squareBracketsOrSpaceRegExp, '').split(',');
     return constructors.map((name) => {
       const Constructor = this.rulePartConstructors.get(name);
-
-      if (!(Constructor instanceof RulePart)) {
-        throw new Error(`Unable find dendent RulePart constructor "${name}"`);
+      if (!(RulePart.isPrototypeOf(Constructor))) {
+        throw new Error(`Unable find decendent RulePart constructor "${name}"`);
       }
-
       return Constructor;
     });
   }
 
   toString() {
-    return populate(this.template, this.ruleParts);
+    return populate(this.template, this);
   }
 }
 

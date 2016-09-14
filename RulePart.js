@@ -13,6 +13,20 @@ class RulePart extends Map {
       );
     }
 
+    const expectedNumberOfParameters = Object.keys(
+      this.constructor.parameterValidation || {}
+    ).length;
+
+    if (
+      this.constructor.parameterValidation instanceof Object &&
+      expectedNumberOfParameters !== parameters.size
+    ) {
+      throw new Error(
+        `Constructor ${this.constructor.name} requires ${expectedNumberOfParameters} ` +
+        `but got ${parameters.size}`
+      );
+    }
+
     if (!this.constructor.template) {
       this.constructor.template = '';
     }
@@ -77,6 +91,7 @@ class RulePart extends Map {
   }
 
   toString() {
+    console.log('tostr', populate(this.constructor.template, this))
     return populate(this.constructor.template, this);
   }
 }

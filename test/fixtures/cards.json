@@ -1,7 +1,7 @@
 [
   {
     "name": "Lightning Bolt",
-    "rules": "{this:name} {effect:DealDamage amount=3 target=[Creature Player]}.",
+    "rules": "{name} {effect:DealDamage amount=3 target=[Creature, Player]}.",
     "output": "Lightning Bolt deals 3 damage to target creature or player."
   },
   {
@@ -14,10 +14,5 @@
       "W, Sacrifice an Enchantment: Destroy target enchantment.",
       "3UU: Counter target enchantment."
     ]
-  },
-  {
-    "name": "Braingeyser",
-    "rules": "{effect:PlayerDrawCard target=Player amount={this:cost}}.",
-    "output": "Target player draws X cards."
   }
 ]

@@ -1,8 +1,8 @@
 const RulePart = require('./RulePart');
 
 class Target extends RulePart {
-  constructor() {
-    super();
+  constructor(parameters) {
+    super(parameters);
     this.type = 'target';
   }
 }

@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const Rule = require('../Rule');
+const Effect = require('../Effect');
 const RulePart = require('../RulePart');
 const cardsFixtures = require('./fixtures/cards');
 const moduleLoader = require('../moduleLoader');
@@ -49,7 +50,10 @@ describe('Rule', () => {
 
   it('should throw error when RulePart found is of the wrong type', () => {
     assert.throws(() => {
-      const rule = new Rule('{wrongType:DealDamage} some text after.', rulePartConstructors);
+      const rule = new Rule(
+        '{wrongType:DealDamage amount=3 target=Player} some text after.',
+        rulePartConstructors
+      );
       rule.toString();
     }, /RulePart instance must be of type "effect"/);
   });
@@ -60,41 +64,41 @@ describe('Rule', () => {
         '{effect:DealDamage amount=3 target=Swimmingpool} some text after.', rulePartConstructors
       );
       rule.toString();
-    }, /Unable find dendent RulePart constructor "Swimmingpool"/);
+    }, /Unable find decendent RulePart constructor "Swimmingpool"/);
   });
 
   it('should throw error when RulePart is malformed', () => {
     assert.throws(() => {
       const rule = new Rule(
-        '{effect:DealDamage amount=3 target=[Player} some text after.', rulePartConstructors
+        '{effect:DealDamage amount3 target=[Player} some text after.', rulePartConstructors
       );
       rule.toString();
-    }, /Malformed RulePart attribute in: target=\[Player/);
+    }, /Malformed RulePart attribute in: amount3/);
   });
 
   it('should throw error when Rule is malformed', () => {
     assert.throws(() => {
       const rule = new Rule(
-        '{{effectDealDamage amount="3 =target=[Player} some text after.', rulePartConstructors
+        '{{effect:DealDamage amount="3 =target=[Player} some text after.', rulePartConstructors
       );
       rule.toString();
-    }, /Malformed Rule: \{\{effectDealDamage amount="3 =target=\[Player\} some text after\./);
+    }, /Malformed RulePart attribute in: amount="3 =target=\[Player/);
   });
 
   it('should throw error when RulePart parameter is invalid type', () => {
     assert.throws(() => {
       const rule = new Rule(
-        '{effect:DealDamage amount="3" target=Enchantment} some text after.', rulePartConstructors
+        '{effect:DealDamage amount=3 target=Enchantment} some text after.', rulePartConstructors
       );
       rule.toString();
-    }, /TODO: write error message here/);
+    }, /Constructor DealDamage requires parameter "target" to be one of /);
   });
 
   it('should throw error when RulePart parameter is missing', () => {
     assert.throws(() => {
       const rule = new Rule('{effect:DealDamage} some text after.', rulePartConstructors);
       rule.toString();
-    }, /RulePart parameter "amount" is missing/);
+    }, /Constructor DealDamage requires 2 but got 0/);
   });
 
   describe('#toString', () => {
@@ -104,21 +108,30 @@ describe('Rule', () => {
     });
 
     it('should generate valid text with rule parts as number and instance', () => {
-      const rule = new Rule('{effect:DealDamage amount=3 target=Player}.', rulePartConstructors);
-      assert.equal(rule.toString(), 'Lightning Bolt deals 3 damage to target player.');
+      const data = new Map();
+      data.set('name', 'Bolt');
+      const rule = new Rule(
+        '{name} {effect:DealDamage amount=3 target=Player}.',
+        rulePartConstructors,
+        data
+      );
+      assert.equal(rule.toString(), 'Bolt deals 3 damage to target player.');
     });
 
     it('should generate valid text with rule parts as text', () => {
-      class TextParameter extends RulePart {}
-      const singleRulePartConstructor = new Map([TextParameter]);
+      class TextParameter extends Effect {}
+      TextParameter.parameterValidation = { text: String, amount: Number };
+      TextParameter.template = 'text parameter {text}';
+      const singleRulePartConstructor = new Map();
+      singleRulePartConstructor.set('TextParameter', TextParameter);
       const rule = new Rule(
-        'Now with {effect:TextParameter text="testing with some text"} rule.',
+        'Now with {effect:TextParameter text="testing with some text" amount=3} rule.',
         singleRulePartConstructor
       );
       assert.equal(rule.toString(), 'Now with text parameter testing with some text rule.');
     });
 
-    it('should generate valid texts from all card fixtures', () => {
+    it.skip('should generate valid texts from all card fixtures', () => {
       const rules = iterateRulesInCardFixture(cardsFixtures);
       const rulesKeys = Object.keys(rules);
       assert.equal(rulesKeys.length, Object.keys(cardsFixtures).length);
@@ -133,7 +146,7 @@ describe('Rule', () => {
     });
   });
 
-  describe('#activate', () => {
+  describe.skip('#activate', () => {
     it('should resolve rule', () => {
       assert.equal(false, true);
     });

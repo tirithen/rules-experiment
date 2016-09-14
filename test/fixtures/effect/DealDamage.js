@@ -9,4 +9,6 @@ DealDamage.parameterValidation = {
   amount: Number
 };
 
+DealDamage.template = 'deals {amount} damage to target {target}';
+
 module.exports = DealDamage;
