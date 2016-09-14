@@ -7,12 +7,12 @@
   {
     "name": "Arenson's Aura",
     "rules": [
-      "{activation:Mana white=1}, {activation:Sacrifice target=Enchantment}: {effect:Destroy target=Enchantment}.",
-      "{activation:Mana colorless=3 blue=2}: {effect:Counter target=Enchantment}."
+      "{activation:Mana amount=\"W\"}, {activation:Sacrifice target=Enchantment}: {effect:Destroy target=Enchantment}.",
+      "{activation:Mana amount=\"3UU\"}: {effect:Counter target=Enchantment}."
     ],
     "output": [
       "W, Sacrifice an Enchantment: Destroy target enchantment.",
-      "3BB: Counter target enchantment."
+      "3UU: Counter target enchantment."
     ]
   },
   {

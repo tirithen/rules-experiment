@@ -40,6 +40,27 @@ describe('Rule', () => {
     assert.equal(rule instanceof Rule, true);
   });
 
+  it('should throw error when RulePart is missing', () => {
+    assert.throws(() => {
+      const rule = new Rule('{type:IDoNotExist} some text after.');
+      rule.toString();
+    }, /RulePart constructor named "IDoNotExist" was not found/);
+  });
+
+  it('should throw error when RulePart found is of the wrong type', () => {
+    assert.throws(() => {
+      const rule = new Rule('{wrongType:DealDamage} some text after.', rulePartConstructors);
+      rule.toString();
+    }, /RulePart instance must be of type "effect"/);
+  });
+
+  it('should throw error when RulePart parameter is missing', () => {
+    assert.throws(() => {
+      const rule = new Rule('{effect:DealDamage} some text after.', rulePartConstructors);
+      rule.toString();
+    }, /RulePart parameter "amount" is missing/);
+  });
+
   describe('#toString', () => {
     it('should generate valid static text', () => {
       const rule = new Rule('This is a rule');
