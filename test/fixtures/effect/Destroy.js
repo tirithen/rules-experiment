@@ -3,7 +3,7 @@ const Target = require('../../../Target');
 
 class Destroy extends Effect {}
 
-Destroy.parameters = {
+Destroy.parameterValidation = {
   target: Target
 };
 

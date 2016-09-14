@@ -3,7 +3,7 @@ const Player = require('../target/Player');
 
 class PlayerDrawCard extends Effect {}
 
-PlayerDrawCard.parameters = {
+PlayerDrawCard.parameterValidation = {
   target: Player,
   amount: Number
 };

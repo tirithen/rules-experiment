@@ -4,7 +4,7 @@ const Player = require('../target/Player');
 
 class DealDamage extends Effect {}
 
-DealDamage.parameters = {
+DealDamage.parameterValidation = {
   target: [Player, Creature],
   amount: Number
 };

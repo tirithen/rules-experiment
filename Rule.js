@@ -2,9 +2,11 @@ const populate = require('./populate');
 const RulePart = require('./RulePart');
 
 const quoteRegExp = /"/g;
+const squareBracketsOrSpaceRegExp = /[\[\]\s]/g;
 const parameterRegExp = /\w+\s*=\s*("[^"]+"|\w+)/g;
 const rulePartRegExp = /\{\s*(\w+)\s*:\s*(\w+)(\s+([^\}]+))?\s*\}/;
 const isNumericRegExp = /^\d+(\.\d+)?$/;
+const referrsToConstructorsRegExp = /^\s*\[?\s*[\w\s,]+\s*\]?\s*$/;
 
 class Rule extends Map {
   constructor(string = '', rulePartConstructors = new Map()) {
@@ -53,10 +55,10 @@ class Rule extends Map {
         parts[1] = parts[1].replace(quoteRegExp, '');
       } else if (parts[1].match(isNumericRegExp)) {
         parts[1] = parseFloat(parts[1]);
-      } else if (this.isRulePartOrArrayWithRuleParts(parts[1])) {
+      } else if (parts[1].match(referrsToConstructorsRegExp)) {
         parts[1] = this.convertRulePartStringsToConstructorArray(parts[1]);
       } else {
-        throw new Error('Malformed RulePart attribute in:', string);
+        throw new Error(`Malformed RulePart attribute in: ${string}`);
       }
 
       parameters.set(parts[0], parts[1]);
@@ -65,32 +67,13 @@ class Rule extends Map {
     return parameters;
   }
 
-  isRulePartOrArrayWithRuleParts(values) {
-    let result = true;
-
-    if (!Array.isArray(values)) {
-      values = [values];
-    }
-
-    values.forEach((value) => {
-      if (result && !this.rulePartConstructors.has(value)) {
-        result = false;
-      }
-    });
-
-    return result;
-  }
-
-  convertRulePartStringsToConstructorArray(values) {
-    if (!Array.isArray(values)) {
-      values = [values];
-    }
-
-    return values.map((value) => {
-      const Constructor = this.rulePartConstructors.get(value);
+  convertRulePartStringsToConstructorArray(value) {
+    const constructors = value.replace(squareBracketsOrSpaceRegExp, '').split(',');
+    return constructors.map((name) => {
+      const Constructor = this.rulePartConstructors.get(name);
 
       if (!(Constructor instanceof RulePart)) {
-        throw new Error(`Unable to find RulePart constructor "${value}"`);
+        throw new Error(`Unable find dendent RulePart constructor "${name}"`);
       }
 
       return Constructor;

@@ -4,7 +4,7 @@ const Enchantment = require('../target/Enchantment');
 
 class Sacrifice extends Activation {}
 
-Sacrifice.parameters = {
+Sacrifice.parameterValidation = {
   target: [Creature, Enchantment]
 };
 

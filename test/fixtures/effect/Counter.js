@@ -4,7 +4,7 @@ const Enchantment = require('../target/Enchantment');
 
 class Counter extends Effect {}
 
-Counter.parameters = {
+Counter.parameterValidation = {
   target: [Creature, Enchantment]
 };
 

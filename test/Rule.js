@@ -54,6 +54,42 @@ describe('Rule', () => {
     }, /RulePart instance must be of type "effect"/);
   });
 
+  it('should throw error when dependent RulePart is missing', () => {
+    assert.throws(() => {
+      const rule = new Rule(
+        '{effect:DealDamage amount=3 target=Swimmingpool} some text after.', rulePartConstructors
+      );
+      rule.toString();
+    }, /Unable find dendent RulePart constructor "Swimmingpool"/);
+  });
+
+  it('should throw error when RulePart is malformed', () => {
+    assert.throws(() => {
+      const rule = new Rule(
+        '{effect:DealDamage amount=3 target=[Player} some text after.', rulePartConstructors
+      );
+      rule.toString();
+    }, /Malformed RulePart attribute in: target=\[Player/);
+  });
+
+  it('should throw error when Rule is malformed', () => {
+    assert.throws(() => {
+      const rule = new Rule(
+        '{{effectDealDamage amount="3 =target=[Player} some text after.', rulePartConstructors
+      );
+      rule.toString();
+    }, /Malformed Rule: \{\{effectDealDamage amount="3 =target=\[Player\} some text after\./);
+  });
+
+  it('should throw error when RulePart parameter is invalid type', () => {
+    assert.throws(() => {
+      const rule = new Rule(
+        '{effect:DealDamage amount="3" target=Enchantment} some text after.', rulePartConstructors
+      );
+      rule.toString();
+    }, /TODO: write error message here/);
+  });
+
   it('should throw error when RulePart parameter is missing', () => {
     assert.throws(() => {
       const rule = new Rule('{effect:DealDamage} some text after.', rulePartConstructors);
@@ -72,7 +108,7 @@ describe('Rule', () => {
       assert.equal(rule.toString(), 'Lightning Bolt deals 3 damage to target player.');
     });
 
-    it.skip('should generate valid text with rule parts as text', () => {
+    it('should generate valid text with rule parts as text', () => {
       class TextParameter extends RulePart {}
       const singleRulePartConstructor = new Map([TextParameter]);
       const rule = new Rule(
@@ -82,7 +118,7 @@ describe('Rule', () => {
       assert.equal(rule.toString(), 'Now with text parameter testing with some text rule.');
     });
 
-    it.skip('should generate valid texts from all card fixtures', () => {
+    it('should generate valid texts from all card fixtures', () => {
       const rules = iterateRulesInCardFixture(cardsFixtures);
       const rulesKeys = Object.keys(rules);
       assert.equal(rulesKeys.length, Object.keys(cardsFixtures).length);
@@ -97,7 +133,7 @@ describe('Rule', () => {
     });
   });
 
-  describe.skip('#activate', () => {
+  describe('#activate', () => {
     it('should resolve rule', () => {
       assert.equal(false, true);
     });

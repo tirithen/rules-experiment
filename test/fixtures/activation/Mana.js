@@ -2,7 +2,7 @@ const Activation = require('../../../Activation');
 
 class Mana extends Activation {}
 
-Mana.parameters = {
+Mana.parameterValidation = {
   amount: String
 };
 
